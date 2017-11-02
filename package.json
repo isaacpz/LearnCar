@@ -1,0 +1,24 @@
+{
+  "name": "typescript_pixijs_v4_boilerplate",
+  "version": "1.0.0",
+  "description": "Simple boilerplate to show how to use PIXI.js with Typescript",
+  "main": "public/bundle.js",
+  "scripts": {
+    "preinstall": "yarn global add webpack@2",
+    "build": "webpack",
+    "build:watch": "webpack --watch"
+  },
+  "author": "Arvo Saalits",
+  "license": "ISC",
+  "dependencies": {
+    "@types/dat-gui": "^0.6.3",
+    "awesome-typescript-loader": "^3.1.2",
+    "dat-gui": "^0.5.0",
+    "pixi.js": "^4.5.4"
+  },
+  "devDependencies": {
+    "@types/pixi.js": "^4.5.2",
+    "typescript": "next",
+    "webpack": "^3.4.1"
+  }
+}

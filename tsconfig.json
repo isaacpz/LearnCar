@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "module": "commonjs",
+        "removeComments": true,
+        "sourceMap": true,
+        "watch": false,
+        "outDir": "./public/js"
+    },
+    "filesGlob": [
+        "src/**/*.ts"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}
