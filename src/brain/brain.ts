@@ -1,8 +1,10 @@
+import { layer } from '../components/brainlayer';
+
 export default class Brain {
     topology:number[] = [5, 4, 3, 2]; //represents the amount of nodes in each layer (ie 5 input layers, 2 output layers)
 
-    hiddenLayers:number[][][] = []; //3d bc each layer, then each neuron, then each connection weight
-    outputLayer:number[][] = []; //2d because each neuron, then each incoming connection weight
+    hiddenLayers:layer[] = []; //2d bc multiple hidden layers may exist
+    outputLayer:layer = [];
 
     constructor() {
         this.generateInitialWeights();
@@ -12,7 +14,7 @@ export default class Brain {
         let lastAmount:number = this.topology[0];
         for(let i = 1; i < this.topology.length - 1; i++) { //For each hidden layer (which excludes first and last)
             let currentAmount:number = this.topology[i];
-            let layer:number[][] = [];
+            let layer:layer = [];
 
             for(let j = 0; j < currentAmount; j++) {
                 let connections:number[] = []; //This represents all the connections going to a single neuron
@@ -59,5 +61,4 @@ export default class Brain {
         }
         return output;
     }
-
 }

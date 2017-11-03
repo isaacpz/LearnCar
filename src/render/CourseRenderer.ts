@@ -97,8 +97,8 @@ export default class CourseRenderer {
 
     setCamera(cars: Car[]) {
         if(!this.settings.settings.follow) {
-            this.app.stage.pivot.set(0, 0);
-            this.app.stage.scale.set(1, 1);
+            this.app.stage.pivot.set(-window.innerWidth / 2, -window.innerHeight / 2 - 1200);
+            this.app.stage.scale.set(0.5, 0.5);
         } else {
             //Find first living car
             for(let car of cars) {
