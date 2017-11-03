@@ -3,8 +3,11 @@ import { point } from '../components/point';
 
 export default class PhysicsUtil {
 
-    //CollisionDroiteSeg
-    static doesLineSegmentCollide(A: point, B: point, O: point, P: point): boolean {
+    static doLineSegmentsCollide(line1: line, line2: line): boolean {
+        let A = line1.p1;
+        let B = line1.p2;
+        let O = line2.p1;
+        let P = line2.p2;
         let AO: point = { x: 0, y: 0 },
             AP: point = { x: 0, y: 0 },
             AB: point = { x: 0, y: 0 };
@@ -19,10 +22,14 @@ export default class PhysicsUtil {
         return ((AB.x * AP.y - AB.y * AP.x) * (AB.x * AO.y - AB.y * AO.x) < 0.0);
     }
 
-    //CollisionSegSeg_partial
-    static getPartialSegmentCollisionDistance(A: point, B: point, O: point, P: point): number {
-        if (!this.doesLineSegmentCollide(A, B, O, P))
+    static getPartialSegmentCollisionDistance(line1: line, line2: line): number {
+        if (!this.doLineSegmentsCollide(line1, line2))
             return 1.0;
+
+        let A = line1.p1;
+        let B = line1.p2;
+        let O = line2.p1;
+        let P = line2.p2;
 
         let AB: point = { x: 0, y: 0 },
             OP: point = { x: 0, y: 0 };
@@ -36,14 +43,11 @@ export default class PhysicsUtil {
     }
 
 
-    //CollisionPointCercle
     static isPointInCircle(point: point, center: point, radius: number): boolean {
         let d2 = (point.x - center.x) * (point.x - center.x) + (point.y - center.y) * (point.y - center.y);
-
         return (d2 <= radius * radius);
     }
 
-    //CollisionDroiteCercle_BBox
     static doesCircleCollideWithBoundingBox(A: point, B: point, C: point, radius: number): boolean {
         var minAB = { x: Math.min(A.x, B.x), y: Math.min(A.y, B.y) };
         var maxAB = { x: Math.max(A.x, B.x), y: Math.max(A.y, B.y) };
@@ -56,8 +60,7 @@ export default class PhysicsUtil {
             minAB.y > maxC.y);
     }
 
-    //CollisionDroiteCercle
-    static doesPointCollideWithCircle(A, B, C, radius): boolean {
+    static doesPointCollideWithCircle(A:point, B:point, C:point, radius:number): boolean {
         if (!this.doesCircleCollideWithBoundingBox(A, B, C, radius))
             return false;
 
@@ -74,11 +77,10 @@ export default class PhysicsUtil {
         return (CI < radius);
     }
 
-    //CollisionSegmentCercle
-    static doesLineCollideWithCircle(line:line, C: point, radius: number): boolean {
+    static doesLineCollideWithCircle(line: line, C: point, radius: number): boolean {
         //Make points
-        let A:point = line.p1;
-        let B:point = line.p2;
+        let A: point = line.p1;
+        let B: point = line.p2;
 
         if (this.doesPointCollideWithCircle(A, B, C, radius) == false)
             return false;  //If it's not touching the right, it can't touch the segment
@@ -108,17 +110,16 @@ export default class PhysicsUtil {
         return false;
     }
 
-    static rotateVec2(point:point, center:point, angle:number):point
-	{
-		var	newPos:point = {x: 0, y: 0};
+    static rotateVec2(point: point, center: point, angle: number): point {
+        var newPos: point = { x: 0, y: 0 };
 
-		var cos_a = Math.cos(angle);
-		var sin_a = Math.sin(angle);
+        var cos_a = Math.cos(angle);
+        var sin_a = Math.sin(angle);
 
-		newPos.x = center.x + (point.x-center.x) * cos_a + (point.y-center.y)*sin_a;
-		newPos.y = center.y + (point.x-center.x) * sin_a - (point.y-center.y)*cos_a;
+        newPos.x = center.x + (point.x - center.x) * cos_a + (point.y - center.y) * sin_a;
+        newPos.y = center.y + (point.x - center.x) * sin_a - (point.y - center.y) * cos_a;
 
-		return newPos;
-	}
+        return newPos;
+    }
 
 }
