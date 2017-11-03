@@ -1,8 +1,10 @@
 # LearnCar Demo
+![Video of demo](https://media.giphy.com/media/3otWpseA5yA2dnBFxS/giphy.gif)
 
 LearnCar is an extremely visual demo of genetic machine learning applied to cars as they learn how to navigate a track. 
 
 ## [See A Working Demo!](http://isaacpz.me/LearnCar/)
+
 
 ## Use
 
