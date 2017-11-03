@@ -156,7 +156,7 @@ export default class Car {
 
             //Find distance from walls
             for (let wall of walls) {
-                var v = PhysicsUtil.getPartialSegmentCollisionDistance(sensor.line.p1, sensor.line.p2, wall.p1, wall.p2);
+                var v = PhysicsUtil.getPartialSegmentCollisionDistance(sensor.line, wall);
 
                 if (v >= 0.0 && v < 1.0 && sensor.distance > v)
                     sensor.distance = v;
