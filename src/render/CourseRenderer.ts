@@ -30,7 +30,7 @@ export default class CourseRenderer {
         //Create canvas
         this.app = new Application(window.innerWidth, window.innerHeight, this.applicationOptions);
         document.body.appendChild(this.app.view);
-        
+
         window.onresize = (ev) => {
             this.app.renderer.resize(window.innerWidth, window.innerHeight);
         };
@@ -63,27 +63,27 @@ export default class CourseRenderer {
                     this.carSprites.push(sprite);
                 }
             } else { //Too many
-                for(let i = 0; i < this.carSprites.length - cars.length; i++) {
+                for (let i = 0; i < this.carSprites.length - cars.length; i++) {
                     this.carSprites.pop().destroy();
                 }
             }
         }
 
         //For each car, update position, rotation, color, and sensors
-        let sensorRendered:boolean = false;
-        for(let i in cars) {
+        let sensorRendered: boolean = false;
+        for (let i in cars) {
             let car = cars[i];
             let sprite = this.carSprites[i];
             sprite.position.set(car.position.x, car.position.y);
             sprite.rotation = car.angle + (Math.PI / 2);
 
-            if(car.color != sprite.color) {
+            if (car.color != sprite.color) {
                 sprite.graphics.clear();
                 sprite.setColor(car.color);
             }
             //If car is alive, render sensors
-            if(car.alive && this.settings.settings.renderSensors && !sensorRendered) {
-                for(let sensor of car.sensors) {
+            if (car.alive && this.settings.settings.renderSensors && !sensorRendered) {
+                for (let sensor of car.sensors) {
                     let sensorSprite = new SensorSprite(sensor);
                     this.app.stage.addChild(sensorSprite);
                     this.sensorSprites.push(sensorSprite);
@@ -96,20 +96,24 @@ export default class CourseRenderer {
     }
 
     setCamera(cars: Car[]) {
-        if(!this.settings.settings.follow) {
+        if (!this.settings.settings.follow) {
             this.app.stage.pivot.set(-window.innerWidth / 2, -window.innerHeight / 2 - 1200);
             this.app.stage.scale.set(0.5, 0.5);
         } else {
-            //Find first living car
-            for(let car of cars) {
-                if(car.alive) {
-                    //Set the camera on them
-                    let zoom = this.settings.settings.zoom * 10;                    
-                    this.app.stage.pivot.set(car.position.x - (window.innerWidth / (zoom * 2)), car.position.y - (window.innerHeight / (zoom * 2)));
-                    this.app.stage.scale.set(zoom, zoom);
-                    return;
+            //Find most fit living car
+            let top: Car = cars[0];
+
+            for (let car of cars) {
+                if (car.alive) {
+                    if (car.fitness - 2 > top.fitness || !top.alive)
+                        top = car;
                 }
             }
+
+            //Set the camera on them
+            let zoom = this.settings.settings.zoom * 10;
+            this.app.stage.pivot.set(top.position.x - (window.innerWidth / (zoom * 2)), top.position.y - (window.innerHeight / (zoom * 2)));
+            this.app.stage.scale.set(zoom, zoom);
         }
     }
 

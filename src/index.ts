@@ -2,6 +2,9 @@ import Course from './course';
 import CourseRenderer from './render/CourseRenderer';
 import Settings from './settings';
 import Car from './car';
+import Breeder from './brain/breeder';
+import Brain from './brain/brain';
+import { GUIController } from 'dat-gui';
 
 new class Main {
 
@@ -47,7 +50,7 @@ new class Main {
 
     constructor() {
         let settings = new Settings();
-        this.startSimulation(settings, settings.settings.entityAmount, this.course);
+        this.startSimulation(settings, settings.settings.breedAmount + settings.settings.alphaClones, this.course);
     }
 
     startSimulation(settings:Settings, carAmount:number, courseData:number[][]) {
@@ -62,27 +65,40 @@ new class Main {
         let cars:Car[] = [];
         for(let i = 0; i < carAmount; i++) {
             let car = new Car(settings, course);
-            car.position = {x: course.startingPosition.x, y: course.startingPosition.y};
-            car.angle = course.startingAngle;
+            car.brain = new Brain();
             cars.push(car);
         }
+
+        settings.actions.add(settings.settings, "method").name("Reset Cars").fire = ():GUIController => {
+            cars = [];
+            for(let i = 0; i < carAmount; i++) {
+                let car = new Car(settings, course);
+                car.brain = new Brain();
+                cars.push(car);
+            }
+            return null;
+        };
         
+        let breeder:Breeder = new Breeder(settings);
         renderer.app.ticker.add((delta) => {
             let callStack = [];
             let anyoneOutThere:boolean = false;
             for(let car of cars) {
                 if(car.alive) {
                     anyoneOutThere = true;
-                    callStack.push(car.update(delta, course));
+                    for(let i = 0; i < settings.settings.speed; i++) {
+                        callStack.push(car.update(delta, course));
+                    }
                 }
             }
 
             if(!anyoneOutThere) { //Everyone has died...
-                cars.forEach((car) => {
-                    car.position = {x: course.startingPosition.x, y: course.startingPosition.y};
-                    car.angle = course.startingAngle;
-                    car.respawn(course);
-                });
+                cars = breeder.breed(cars, course);
+            }
+
+            let input: number[] = [];
+            for (let sensor of cars[0].sensors) {
+                input.push(sensor.distance);
             }
 
             Promise.all([callStack]).then((v) => {

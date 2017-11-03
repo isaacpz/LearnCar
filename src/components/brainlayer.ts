@@ -1,0 +1,1 @@
+export type layer = number[][]; //2d because each neuron, then each incoming connection weight

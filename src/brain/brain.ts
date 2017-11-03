@@ -6,39 +6,36 @@ export default class Brain {
     hiddenLayers:layer[] = []; //2d bc multiple hidden layers may exist
     outputLayer:layer = [];
 
-    constructor() {
-        this.generateInitialWeights();
+    constructor(random:boolean = true) {
+        this.generateInitialWeights(random);
     }
 
-    generateInitialWeights() {
+    generateInitialWeights(random:boolean) {
         let lastAmount:number = this.topology[0];
-        for(let i = 1; i < this.topology.length - 1; i++) { //For each hidden layer (which excludes first and last)
+        for(let i = 1; i < this.topology.length; i++) { //For each hidden layer (which excludes first and last)
             let currentAmount:number = this.topology[i];
             let layer:layer = [];
 
             for(let j = 0; j < currentAmount; j++) {
                 let connections:number[] = []; //This represents all the connections going to a single neuron
                 for(let k = 0; k < lastAmount; k++) { //Each of the connections from the last layer gets a weight
-                    connections.push(Math.random() - Math.random()); //random -1 < val < 1
+                    let value = 0;
+                    if(random)
+                        value = Math.random() - Math.random(); //random -1 < val < 1
+                    connections.push(value);
                 }
                 layer.push(connections);
             }
             this.hiddenLayers.push(layer);
             lastAmount = currentAmount;
         }
-        
-        for(let i = 0; i < this.topology[this.topology.length - 1]; i++) { //For each of the output neurons
-            let connections:number[] = [];
-            for(let j = 0; j < lastAmount; j++) {
-                connections.push(Math.random() - Math.random());
-            }
-            this.outputLayer.push(connections);
-        }
     }
 
     process(inputValues:number[]):number[] {
-        //hidden layers
-        for(let currentLayer of this.hiddenLayers) {
+        let output:number[] = [];
+        
+        for(let i in this.hiddenLayers) {
+            let currentLayer = this.hiddenLayers[i];
             let outputValues:number[] = [];
             for(let j in currentLayer) {
                 let sum:number = 0;
@@ -46,19 +43,13 @@ export default class Brain {
                     sum += inputValues[k] * currentLayer[j][k]; //Apply the modifier then add to the sum for the output
                 }
                 outputValues.push(sum);
+                if(parseInt(i) == this.hiddenLayers.length - 1) { //if its the output layer, just output the values
+                    output.push(sum);
+                }
             }
             inputValues = outputValues; //For the next layer, input = output
         }
 
-        let output:number[] = [];
-        //output layer
-        for(let i in this.outputLayer) {
-            let sum:number = 0;
-            for(let j in inputValues) {
-                sum += inputValues[j] * this.outputLayer[i][j];
-            }
-            output.push(sum);
-        }
         return output;
     }
 }

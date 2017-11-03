@@ -18,7 +18,7 @@ export default class Car {
     /*
     Brain
     */
-    brain: Brain = new Brain();
+    brain: Brain;
 
     /*
     Life Info
@@ -39,6 +39,9 @@ export default class Car {
     constructor(settings: Settings, course: Course) {
         this.settings = settings;
         this.setCheckpoints(course);        
+
+        this.position = {x: course.startingPosition.x, y: course.startingPosition.y};
+        this.angle = course.startingAngle;
     }
 
     /*
@@ -62,7 +65,7 @@ export default class Car {
 
         //Set angle
         let angleDelta = result[0];
-        this.angle += angleDelta * this.settings.settings.stepAmount;
+        this.angle += angleDelta * this.settings.settings.stepAmount * delta;
 
         //Set position
         let speed: number = result[1] * 30;
@@ -113,6 +116,7 @@ export default class Car {
         this.remainingCheckpoints = [];
         for(let current of course.checkpoints)
             this.remainingCheckpoints.push(current);
+        this.remainingCheckpoints.splice(0, 1);
     }
 
     /*
@@ -166,7 +170,7 @@ export default class Car {
         let i:number = 0;
         while(i < this.remainingCheckpoints.length) { //use this weird loop so we can remove without skipping values
             let checkpoint = this.remainingCheckpoints[i];
-            if(PhysicsUtil.doesLineCollideWithCircle(checkpoint, this.position, 5)) {
+            if(PhysicsUtil.doesLineCollideWithCircle(checkpoint, this.position, 15)) {
                 this.remainingCheckpoints.splice(i, 1); //Remove this checkpoint so it doesnt get double counted
                 this.health = 100; //Give them more life
                 this.fitness++; //Give them more fitness
