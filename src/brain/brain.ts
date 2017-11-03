@@ -3,8 +3,7 @@ import { layer } from '../components/brainlayer';
 export default class Brain {
     topology:number[] = [5, 4, 3, 2]; //represents the amount of nodes in each layer (ie 5 input layers, 2 output layers)
 
-    hiddenLayers:layer[] = []; //2d bc multiple hidden layers may exist
-    outputLayer:layer = [];
+    connections:layer[] = []; //2d bc multiple hidden layers may exist
 
     constructor(random:boolean = true) {
         this.generateInitialWeights(random);
@@ -26,7 +25,7 @@ export default class Brain {
                 }
                 layer.push(connections);
             }
-            this.hiddenLayers.push(layer);
+            this.connections.push(layer);
             lastAmount = currentAmount;
         }
     }
@@ -34,8 +33,8 @@ export default class Brain {
     process(inputValues:number[]):number[] {
         let output:number[] = [];
         
-        for(let i in this.hiddenLayers) {
-            let currentLayer = this.hiddenLayers[i];
+        for(let i in this.connections) {
+            let currentLayer = this.connections[i];
             let outputValues:number[] = [];
             for(let j in currentLayer) {
                 let sum:number = 0;
@@ -43,7 +42,7 @@ export default class Brain {
                     sum += inputValues[k] * currentLayer[j][k]; //Apply the modifier then add to the sum for the output
                 }
                 outputValues.push(sum);
-                if(parseInt(i) == this.hiddenLayers.length - 1) { //if its the output layer, just output the values
+                if(parseInt(i) == this.connections.length - 1) { //if its the output layer, just output the values
                     output.push(sum);
                 }
             }

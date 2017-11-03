@@ -31,8 +31,8 @@ export default class Breeder {
             for (let i = 0; i < this.settings.settings.alphaClones; i++) {
                 let newCar = new car(this.settings, course);
                 newCar.brain = new Brain(false);
-                let hiddenLayers = ArrayUtil.copy(this.alphaCar.hiddenLayers);
-                newCar.brain.hiddenLayers = hiddenLayers;
+                let hiddenLayers = ArrayUtil.copy(this.alphaCar.connections);
+                newCar.brain.connections = hiddenLayers;
 
                 this.mutate(newCar.brain);
                 spawned.push(newCar);
@@ -64,19 +64,19 @@ export default class Breeder {
     }
 
     crossBreed(parent1:car, parent2:car, baby1:car, baby2:car) {
-        let totalWeights = parent1.brain.hiddenLayers.length;        
+        let totalWeights = parent1.brain.connections.length;        
         let midPoint:number = Math.floor(Math.random() * totalWeights);
 
         //2 kids, each get 1/2 from parent
 		for (let i = 0; i < midPoint; i++)
 		{
-			baby1.brain.hiddenLayers[i] = parent1.brain.hiddenLayers[i];
-			baby2.brain.hiddenLayers[i] = parent2.brain.hiddenLayers[i];
+			baby1.brain.connections[i] = parent1.brain.connections[i];
+			baby2.brain.connections[i] = parent2.brain.connections[i];
 		}
         for (let i = midPoint; i < totalWeights; i++)
 		{
-			baby1.brain.hiddenLayers[i] = parent2.brain.hiddenLayers[i];
-			baby2.brain.hiddenLayers[i] = parent1.brain.hiddenLayers[i];
+			baby1.brain.connections[i] = parent2.brain.connections[i];
+			baby2.brain.connections[i] = parent1.brain.connections[i];
 		}
     }
 
@@ -84,7 +84,7 @@ export default class Breeder {
         if(Math.random() > this.settings.settings.mutationChance) {
             return;
         }
-        for(let layer of brain.hiddenLayers) {
+        for(let layer of brain.connections) {
             for(let weights of layer) {
                 for(let i = 0; i < weights.length; i++) {
                     weights[i] += ((Math.random() - Math.random()) * this.settings.settings.mutationFactor);
