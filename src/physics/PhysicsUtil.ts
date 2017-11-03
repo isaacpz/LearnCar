@@ -60,7 +60,7 @@ export default class PhysicsUtil {
             minAB.y > maxC.y);
     }
 
-    static doesPointCollideWithCircle(A:point, B:point, C:point, radius:number): boolean {
+    static doesPointCollideWithCircle(A: point, B: point, C: point, radius: number): boolean {
         if (!this.doesCircleCollideWithBoundingBox(A, B, C, radius))
             return false;
 
