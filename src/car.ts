@@ -9,6 +9,9 @@ import { sensor } from "./components/sensor";
 export default class Car {
     settings: Settings;
 
+    static nextId = 0;
+    id: number = 0;
+
     /*
     Position Info
     */
@@ -39,6 +42,9 @@ export default class Car {
     constructor(settings: Settings, course: Course) {
         this.settings = settings;
         this.setCheckpoints(course);        
+
+        this.id = Car.nextId;
+        Car.nextId++;
 
         this.position = {x: course.startingPosition.x, y: course.startingPosition.y};
         this.angle = course.startingAngle;

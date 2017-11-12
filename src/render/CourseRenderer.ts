@@ -24,6 +24,9 @@ export default class CourseRenderer {
     carSprites: CarSprite[] = [];
     sensorSprites: SensorSprite[] = [];
 
+    //Camera tracking
+    trackingId: number;
+
     applicationOptions: ApplicationOptions = {
         backgroundColor: 0xFFFFFF,
         antialias: true
@@ -123,12 +126,14 @@ export default class CourseRenderer {
 
             for (let car of cars) {
                 if (car.alive) {
-                    if (car.fitness - 2 > top.fitness || !top.alive) {
+                    if (car.fitness - 3 > top.fitness || !top.alive) {
                         top = car;
                     }
                 }
             }
-            this.updateNeuralNetwork(top.brain);
+            if(top.id !== this.trackingId) {
+                this.updateNeuralNetwork(top.brain);
+            }
 
             //Set the camera on them
             let zoom = this.settings.settings.zoom * 10;
