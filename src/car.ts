@@ -36,7 +36,6 @@ export default class Car {
     Rendering Info
     */
     color: number = 0x1000000 * Math.random(); //To let the renderer know to set this car gray 
-    trail: point[] = []; //Records all the positions the car has visited so far
     sensors: sensor[] = [];
 
     constructor(settings: Settings, course: Course) {
@@ -71,6 +70,7 @@ export default class Car {
 
         //Set angle
         let angleDelta = result[0];
+        angleDelta = Math.min(Math.PI/32.0, Math.max(-Math.PI/32.0, angleDelta)); //Only allow 1/64 of a rotation Pi/32 <= delta <= Pi/32
         this.angle += angleDelta * this.settings.settings.stepAmount * delta;
 
         //Set position
