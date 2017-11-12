@@ -6,15 +6,21 @@ import CircleSprite from "./shapes/circle";
 import Settings from '../settings';
 import CarSprite from "./shapes/car";
 import SensorSprite from "./shapes/sensor";
+import NeuralNetworkSprite from "./shapes/neuralnetwork";
+import Brain from "../brain/brain";
 
 
 export default class CourseRenderer {
     app: Application;
     settings: Settings;
 
+    //Stage
+    stage: PIXI.Container;
+
     //Components
     courseSprite: LinesSprite;
     checkpointsSprite: LinesSprite;
+    neuralNetworkSprite: NeuralNetworkSprite;
     carSprites: CarSprite[] = [];
     sensorSprites: SensorSprite[] = [];
 
@@ -30,6 +36,8 @@ export default class CourseRenderer {
         //Create canvas
         this.app = new Application(window.innerWidth, window.innerHeight, this.applicationOptions);
         document.body.appendChild(this.app.view);
+        this.stage = new PIXI.Container();
+        this.app.stage.addChild(this.stage);
 
         window.onresize = (ev) => {
             this.app.renderer.resize(window.innerWidth, window.innerHeight);
@@ -38,19 +46,19 @@ export default class CourseRenderer {
 
     setCourse(course: Course) {
         if (this.courseSprite !== null) {
-            this.app.stage.removeChild(this.courseSprite);
+            this.stage.removeChild(this.courseSprite);
         }
 
         this.courseSprite = new LinesSprite(course.walls);
-        this.app.stage.addChild(this.courseSprite);
+        this.stage.addChild(this.courseSprite);
 
         this.checkpointsSprite = new LinesSprite(course.checkpoints, 0xe8e8e8);
-        this.app.stage.addChild(this.checkpointsSprite);
+        this.stage.addChild(this.checkpointsSprite);
     }
 
     updateCars(cars: Car[]) {
         //Kill all sensor sprites bc they're always changing
-        this.sensorSprites.forEach((sprite) => this.app.stage.removeChild(sprite));
+        this.sensorSprites.forEach((sprite) => this.stage.removeChild(sprite));
         this.sensorSprites = [];
 
         //Make sure we have a sprite for each car
@@ -59,7 +67,7 @@ export default class CourseRenderer {
                 let deficit = cars.length - this.carSprites.length;
                 for (let i = 0; i < deficit; i++) {
                     let sprite = new CarSprite(0x1000000 * Math.random());
-                    this.app.stage.addChild(sprite);
+                    this.stage.addChild(sprite);
                     this.carSprites.push(sprite);
                 }
             } else { //Too many
@@ -85,7 +93,7 @@ export default class CourseRenderer {
             if (car.alive && this.settings.settings.renderSensors && !sensorRendered) {
                 for (let sensor of car.sensors) {
                     let sensorSprite = new SensorSprite(sensor);
-                    this.app.stage.addChild(sensorSprite);
+                    this.stage.addChild(sensorSprite);
                     this.sensorSprites.push(sensorSprite);
                 }
                 sensorRendered = true;
@@ -95,25 +103,37 @@ export default class CourseRenderer {
         this.setCamera(cars);
     }
 
+    updateNeuralNetwork(brain: Brain) {
+        if(this.neuralNetworkSprite != null) {
+            this.app.stage.removeChild(this.neuralNetworkSprite);
+        }
+
+        this.neuralNetworkSprite = new NeuralNetworkSprite(brain);
+        this.neuralNetworkSprite.position.set(50, 50);
+        this.app.stage.addChild(this.neuralNetworkSprite);
+    }
+
     setCamera(cars: Car[]) {
         if (!this.settings.settings.follow) {
-            this.app.stage.pivot.set(-window.innerWidth / 2, -window.innerHeight / 2 - 1200);
-            this.app.stage.scale.set(0.5, 0.5);
+            this.stage.pivot.set(-window.innerWidth / 2, -window.innerHeight / 2 - 1200);
+            this.stage.scale.set(0.5, 0.5);
         } else {
             //Find most fit living car
             let top: Car = cars[0];
 
             for (let car of cars) {
                 if (car.alive) {
-                    if (car.fitness - 2 > top.fitness || !top.alive)
+                    if (car.fitness - 2 > top.fitness || !top.alive) {
                         top = car;
+                    }
                 }
             }
+            this.updateNeuralNetwork(top.brain);
 
             //Set the camera on them
             let zoom = this.settings.settings.zoom * 10;
-            this.app.stage.pivot.set(top.position.x - (window.innerWidth / (zoom * 2)), top.position.y - (window.innerHeight / (zoom * 2)));
-            this.app.stage.scale.set(zoom, zoom);
+            this.stage.pivot.set(top.position.x - (window.innerWidth / (zoom * 2)), top.position.y - (window.innerHeight / (zoom * 2)));
+            this.stage.scale.set(zoom, zoom);
         }
     }
 

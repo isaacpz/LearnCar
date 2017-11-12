@@ -100,7 +100,7 @@ new class Main {
             for (let sensor of cars[0].sensors) {
                 input.push(sensor.distance);
             }
-
+            
             Promise.all([callStack]).then((v) => {
                 renderer.updateCars(cars);
             });

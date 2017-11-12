@@ -11,6 +11,7 @@ export default class Brain {
 
     generateInitialWeights(random: boolean) {
         let lastAmount: number = this.topology[0];
+
         for (let i = 1; i < this.topology.length; i++) { //For each hidden layer (which excludes first and last)
             let currentAmount: number = this.topology[i];
             let layer: layer = [];

@@ -25,6 +25,7 @@ export default class Settings {
         entity.add(this.settings, "stepAmount").name("Step Amount").min(0).max(1);
         entity.add(this.settings, "speed").name("Speed").min(0).step(1);
 
+         
         let camera = this.gui.addFolder("Camera Settings");
         camera.open();
         camera.add(this.settings, "follow").name("Activate Camera?");

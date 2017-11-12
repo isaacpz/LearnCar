@@ -31,8 +31,8 @@ export default class Breeder {
             for (let i = 0; i < this.settings.settings.alphaClones; i++) {
                 let newCar = new car(this.settings, course);
                 newCar.brain = new Brain(false);
-                let hiddenLayers = ArrayUtil.copy(this.alphaCar.connections);
-                newCar.brain.connections = hiddenLayers;
+                let cloneConnections = ArrayUtil.copy(this.alphaCar.connections);
+                newCar.brain.connections = cloneConnections;
 
                 this.mutate(newCar.brain);
                 spawned.push(newCar);
