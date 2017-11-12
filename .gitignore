@@ -58,7 +58,7 @@ typings/
 .env
 
 #compiled files
-public/
+public/js
 
 #mac
 .DS_Store
