@@ -3,7 +3,7 @@ import * as dat from "dat-gui";
 export default class Settings {
     settings = {
         stepAmount: 0.25,
-        speed: 2,
+        speed: 1,
         follow: true,
         renderSensors: false,
         renderNeuralNetwork: true,
@@ -11,8 +11,8 @@ export default class Settings {
 
         alphaClones: 5,
         breedAmount: 25,
-        mutationChance: 0.13,
-        mutationFactor: 0.25,
+        mutationChance: 0.9,
+        mutationFactor: 0.02,
         method: function(){},
     }
 
