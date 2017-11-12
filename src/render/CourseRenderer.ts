@@ -113,6 +113,7 @@ export default class CourseRenderer {
 
         this.neuralNetworkSprite = new NeuralNetworkSprite(brain);
         this.neuralNetworkSprite.position.set(50, 50);
+        this.neuralNetworkSprite.scale.set(1.5, 1.5);
         this.app.stage.addChild(this.neuralNetworkSprite);
     }
 
@@ -131,8 +132,15 @@ export default class CourseRenderer {
                     }
                 }
             }
-            if(top.id !== this.trackingId) {
-                this.updateNeuralNetwork(top.brain);
+            if(this.settings.settings.renderNeuralNetwork) {
+                if(top.id !== this.trackingId) {
+                    this.updateNeuralNetwork(top.brain);
+                }
+            } else {
+                if(this.neuralNetworkSprite != null) {
+                    this.app.stage.removeChild(this.neuralNetworkSprite);
+                    this.neuralNetworkSprite = null;
+                }
             }
 
             //Set the camera on them

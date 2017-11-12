@@ -6,6 +6,7 @@ export default class Settings {
         speed: 1,
         follow: true,
         renderSensors: false,
+        renderNeuralNetwork: true,
         zoom: 0.25,
 
         alphaClones: 5,
@@ -34,13 +35,14 @@ export default class Settings {
         let render = this.gui.addFolder("Render Settings");
         render.open();
         render.add(this.settings, "renderSensors").name("Show Sensors?");
+        render.add(this.settings, "renderNeuralNetwork").name("Render Network?");
 
         let genetic = this.gui.addFolder("Genetic Settings");
         genetic.open();
         genetic.add(this.settings, "alphaClones").name("Alpha Clones").step(1);
         genetic.add(this.settings, "breedAmount").name("Breed Amount").min(1).step(1);
-        genetic.add(this.settings, "mutationChance").name("Mutation Chance").min(0).max(1);
-        genetic.add(this.settings, "mutationFactor").name("Mutation Factor").min(0).max(1);
+        genetic.add(this.settings, "mutationChance").min(0).max(1).name("Mutate Chance");
+        genetic.add(this.settings, "mutationFactor").min(0).max(1).name("Mutate Amount");
 
         this.actions = this.gui.addFolder("Actions");
         this.actions.open();
