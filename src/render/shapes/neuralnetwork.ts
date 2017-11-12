@@ -30,7 +30,7 @@ export default class NeuralNetworkSprite extends Sprite {
                         }
 
                         let width = Math.abs(connections[z]) * 10;
-                        width = Math.max(1, width); //Enforce minimum 1 width
+                        width = Math.max(1, Math.min(width, 10)); //1 <= width <= 10
 
                         this.graphics.lineStyle(width, color, 0.5);
                         this.graphics.moveTo(x, y);

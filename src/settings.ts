@@ -2,7 +2,7 @@ import * as dat from "dat-gui";
 
 export default class Settings {
     settings = {
-        stepAmount: 0.2,
+        stepAmount: 0.5,
         speed: 1,
         follow: true,
         renderSensors: false,
@@ -22,8 +22,8 @@ export default class Settings {
         this.gui = new dat.GUI();
         let entity = this.gui.addFolder("Entity Settings");
         entity.open();
-        entity.add(this.settings, "stepAmount").name("Step Amount").min(0).max(1);
         entity.add(this.settings, "speed").name("Speed").min(0).step(1);
+        entity.add(this.settings, "stepAmount").min(0).max(1).name("Step Amount");        
 
          
         let camera = this.gui.addFolder("Camera Settings");
