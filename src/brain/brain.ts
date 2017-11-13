@@ -1,7 +1,7 @@
 import { layer } from '../components/brainlayer';
 
 export default class Brain {
-    topology: number[] = [5, 4, 3, 2]; //represents the amount of nodes in each layer (ie 5 input layers, 2 output layers)
+    topology: number[] = [5, 2]; //represents the amount of nodes in each layer (ie 5 input layers, 2 output layers)
 
     connections: layer[] = []; //2d bc multiple hidden layers may exist
 
