@@ -13,7 +13,7 @@ export default class Settings {
         breedAmount: 25,
         selectionAmount: 10,
         mutationChance: 0.9,
-        mutationFactor: 0.02,
+        mutationFactor: 0.15,
         method: function(){},
     }
 
