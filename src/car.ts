@@ -29,7 +29,7 @@ export default class Car {
     alive: boolean = true;
     health: number = 100; //The amount of ticks left until they die automatically (gets recharged by passing checkpoints)
     timeAlive: number = 0; //How many ticks they've survived
-    fitness: number = 0; //Their current fitness score, calculated by how many checkpoints they've passed or how long it took them to complete the course    
+    fitness: number = 1; //Their current fitness score, calculated by how many checkpoints they've passed or how long it took them to complete the course    
     remainingCheckpoints:line[] = [];
 
     /*
@@ -70,12 +70,10 @@ export default class Car {
 
         //Set angle
         let angleDelta = result[0];
-        angleDelta = Math.min(Math.PI/32.0, Math.max(-Math.PI/32.0, angleDelta)); //Only allow 1/64 of a rotation Pi/32 <= delta <= Pi/32
         this.angle += angleDelta * this.settings.settings.stepAmount * delta;
 
         //Set position
         let speed: number = result[1] * 30;
-        speed = Math.min(15.0, Math.max(-10.0, speed)) //Constrain between -10 and 15 so we dont get too crazy
         this.position.x += Math.cos(this.angle) * speed * this.settings.settings.stepAmount * delta;
         this.position.y += Math.sin(this.angle) * speed * this.settings.settings.stepAmount * delta;
 
