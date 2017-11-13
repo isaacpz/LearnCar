@@ -14,7 +14,7 @@ export default class Breeder {
         this.settings = settings;
     }
 
-    breed(cars: car[], course:course): car[] {
+    breed(cars: car[], course: course): car[] {
         let spawned: car[] = [];
         let sortedCars = this.getSortedCars(cars);
 
@@ -38,55 +38,40 @@ export default class Breeder {
                 spawned.push(newCar);
             }
         }
-        
-        //Spawn bred cars
-        let spawnedAmount:number = 0;
-        let searchAmount:number = Math.floor(Math.sqrt(this.settings.settings.breedAmount));
-        for(let i = 0; i < searchAmount; i++) {
-            for(let j = 0; j < searchAmount; j++) {
-                if(spawnedAmount >= this.settings.settings.breedAmount) {
-                    break;
-                }
-                let baby1 = new car(this.settings, course);
-                let baby2 = new car(this.settings, course);
-                baby1.brain = new Brain(false);
-                baby2.brain = new Brain(false);
 
-                this.crossBreed(sortedCars[i], sortedCars[j], baby1, baby2);
-                this.mutate(baby1.brain);
-                this.mutate(baby2.brain);
-                spawned.push(baby1);
-                spawned.push(baby2);
-                spawnedAmount+=2;
+        //Spawn bred cars
+        let requiredAmount:number = this.settings.settings.breedAmount;
+
+        //Calculate total fitness of top n cars
+        let totalFitness:number = 0;
+        for(let i = 0; i < this.settings.settings.selectionAmount; i++) {
+            totalFitness += sortedCars[i].fitness;
+        }
+
+        for(let i = 0; i < this.settings.settings.selectionAmount; i++) {
+            let current = sortedCars[i];
+            //Spawn an amount of clones proportional to (this cars performance / top cars)
+            let amount = (current.fitness / totalFitness) * requiredAmount;
+            for(let j = 0; j < amount; j++) {
+                let baby = new car(this.settings, course);
+                baby.brain = new Brain(false);
+                baby.brain.connections = ArrayUtil.copy(current.brain.connections);
+                this.mutate(baby.brain);
+                spawned.push(baby);
             }
         }
+        
         return spawned;
     }
 
-    crossBreed(parent1:car, parent2:car, baby1:car, baby2:car) {
-        let totalWeights = parent1.brain.connections.length;        
-        let midPoint:number = Math.floor(Math.random() * totalWeights);
+    mutate(brain: Brain) {
+        for (let layer of brain.connections) {
+            for (let weights of layer) {
+                for (let i = 0; i < weights.length; i++) {
+                    if (Math.random() > this.settings.settings.mutationChance) {
+                        continue;
+                    }
 
-        //2 kids, each get 1/2 from parent
-		for (let i = 0; i < midPoint; i++)
-		{
-			baby1.brain.connections[i] = parent1.brain.connections[i];
-			baby2.brain.connections[i] = parent2.brain.connections[i];
-		}
-        for (let i = midPoint; i < totalWeights; i++)
-		{
-			baby1.brain.connections[i] = parent2.brain.connections[i];
-			baby2.brain.connections[i] = parent1.brain.connections[i];
-		}
-    }
-
-    mutate(brain:Brain) {
-        if(Math.random() > this.settings.settings.mutationChance) {
-            return;
-        }
-        for(let layer of brain.connections) {
-            for(let weights of layer) {
-                for(let i = 0; i < weights.length; i++) {
                     weights[i] += ((Math.random() - Math.random()) * this.settings.settings.mutationFactor);
                 }
             }

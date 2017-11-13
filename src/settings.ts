@@ -11,6 +11,7 @@ export default class Settings {
 
         alphaClones: 5,
         breedAmount: 25,
+        selectionAmount: 10,
         mutationChance: 0.9,
         mutationFactor: 0.02,
         method: function(){},
@@ -41,6 +42,7 @@ export default class Settings {
         genetic.open();
         genetic.add(this.settings, "alphaClones").name("Alpha Clones").step(1);
         genetic.add(this.settings, "breedAmount").name("Breed Amount").min(1).step(1);
+        genetic.add(this.settings, "selectionAmount").name("Selection Amount").step(1);
         genetic.add(this.settings, "mutationChance").min(0).max(1).name("Mutate Chance");
         genetic.add(this.settings, "mutationFactor").min(0).max(1).name("Mutate Amount");
 
