@@ -11,9 +11,6 @@ export default class Course {
 
     finishPosition: point;
 
-    test = { angle: 5 }
-
-
     constructor(checkpointData: number[][]) {
         //Convert from checkpointData to usable checkpoints. Format: {v1, v2, v3, v4} will be converted to {p1: {x: v1, y: v2}, p2: {x: v3, y: v4}}
         for (let line of checkpointData) {
