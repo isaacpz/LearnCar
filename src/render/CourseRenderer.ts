@@ -25,7 +25,7 @@ export default class CourseRenderer {
     sensorSprites: SensorSprite[] = [];
 
     //Camera tracking
-    trackingId: number;
+    tracking: Car;
 
     applicationOptions: ApplicationOptions = {
         backgroundColor: 0xFFFFFF,
@@ -103,54 +103,54 @@ export default class CourseRenderer {
             }
         }
 
-        this.setCamera(cars);
+        this.setTopCar(cars);
+        this.updateCamera();
+        this.updateNeuralNetwork();
     }
 
-    updateNeuralNetwork(brain: Brain) {
-        if(this.neuralNetworkSprite != null) {
-            this.app.stage.removeChild(this.neuralNetworkSprite);
+    setTopCar(cars: Car[]) {
+        //Find most fit living car
+        let top: Car = cars[0];
+
+        for (let car of cars) {
+            if (car.alive) {
+                if (car.fitness - 3 > top.fitness || !top.alive) {
+                    top = car;
+                }
+            }
         }
 
-        this.neuralNetworkSprite = new NeuralNetworkSprite(brain);
-        this.neuralNetworkSprite.position.set(50, 50);
-        this.neuralNetworkSprite.scale.set(1.5, 1.5);
-        this.app.stage.addChild(this.neuralNetworkSprite);
+        if (top !== this.tracking) {
+            if (this.tracking == null || (!this.tracking.alive || top.fitness - 1 > this.tracking.fitness)) {
+                this.tracking = top;
+
+                //Reset neural network so it re-renders
+                this.app.stage.removeChild(this.neuralNetworkSprite);
+                this.neuralNetworkSprite = null;
+            }
+        }
     }
 
-    setCamera(cars: Car[]) {
-        if (!this.settings.settings.follow) {
-            this.stage.pivot.set(-window.innerWidth / 2, -window.innerHeight / 2 - 1200);
-            this.stage.scale.set(0.5, 0.5);
+    updateNeuralNetwork() {
+        if (this.settings.settings.renderNeuralNetwork) {
+            if (this.neuralNetworkSprite == null) {
+                this.neuralNetworkSprite = new NeuralNetworkSprite(this.tracking.brain);
+                this.neuralNetworkSprite.position.set(50, 50);
+                this.neuralNetworkSprite.scale.set(1.5, 1.5);
+                this.app.stage.addChild(this.neuralNetworkSprite);
+            }
         } else {
-            //Find most fit living car
-            let top: Car = cars[0];
-
-            for (let car of cars) {
-                if (car.alive) {
-                    if (car.fitness - 3 > top.fitness || !top.alive) {
-                        top = car;
-                    }
-                }
+            if (this.neuralNetworkSprite != null) {
+                this.app.stage.removeChild(this.neuralNetworkSprite);
+                this.neuralNetworkSprite = null;
             }
-            if(this.settings.settings.renderNeuralNetwork) {
-                if(top.id !== this.trackingId) {
-                    this.updateNeuralNetwork(top.brain);
-                }
-            } else {
-                if(this.neuralNetworkSprite != null) {
-                    this.app.stage.removeChild(this.neuralNetworkSprite);
-                    this.neuralNetworkSprite = null;
-                }
-            }
-
-            //Set the camera on them
-            let zoom = this.settings.settings.zoom * 10;
-            this.stage.pivot.set(top.position.x - (window.innerWidth / (zoom * 2)), top.position.y - (window.innerHeight / (zoom * 2)));
-            this.stage.scale.set(zoom, zoom);
         }
     }
 
-    update() {
-
+    updateCamera() {
+        //Set the camera on the tracking car
+        let zoom = this.settings.settings.zoom * 10;
+        this.stage.pivot.set(this.tracking.position.x - (window.innerWidth / (zoom * 2)), this.tracking.position.y - (window.innerHeight / (zoom * 2)));
+        this.stage.scale.set(zoom, zoom);
     }
 }

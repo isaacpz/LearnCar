@@ -4,7 +4,6 @@ export default class Settings {
     settings = {
         stepAmount: 0.15,
         speed: 1,
-        follow: true,
         renderSensors: false,
         renderNeuralNetwork: true,
         zoom: 0.25,
@@ -30,7 +29,6 @@ export default class Settings {
          
         let camera = this.gui.addFolder("Camera Settings");
         camera.open();
-        camera.add(this.settings, "follow").name("Activate Camera?");
         camera.add(this.settings, "zoom").min(0.05).max(1).name("Zoom Level");
 
         let render = this.gui.addFolder("Render Settings");
