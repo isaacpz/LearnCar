@@ -95,9 +95,9 @@ export default class CourseRenderer {
         }
 
         this.tracking = this.getTopCar(cars);
-        this.updateCamera(this.tracking);
-        this.updateNeuralNetwork(this.tracking);
-        this.updateSensors(this.tracking);
+        this.updateCameraPosition(this.tracking);
+        this.renderNeuralNetwork(this.tracking);
+        this.renderSensors(this.tracking);
     }
 
     getTopCar(cars: Car[]): Car {
@@ -112,7 +112,7 @@ export default class CourseRenderer {
             }
         }
 
-        //If the currently tracked car is invalid or if this car's fitness is 2 actually better than the tracked car
+        //If the currently tracked car is invalid or if this car's fitness is 2 than the tracked car
         if ((this.tracking == null || !this.tracking.alive) || (top.fitness - 2 >= this.tracking.fitness)) {
             //Going to track a new car
 
@@ -127,7 +127,14 @@ export default class CourseRenderer {
         }
     }
 
-    updateNeuralNetwork(car: Car) {
+    updateCameraPosition(tracking: Car) {
+        //Set the camera on the tracking car
+        let zoom = this.settings.settings.zoom * 10;
+        this.stage.pivot.set(tracking.position.x - (window.innerWidth / (zoom * 2)), tracking.position.y - (window.innerHeight / (zoom * 2)));
+        this.stage.scale.set(zoom, zoom);
+    }
+
+    renderNeuralNetwork(car: Car) {
         if (this.settings.settings.renderNeuralNetwork) {
             if (this.neuralNetworkSprite == null) {
                 this.neuralNetworkSprite = new NeuralNetworkSprite(car.brain);
@@ -143,14 +150,7 @@ export default class CourseRenderer {
         }
     }
 
-    updateCamera(tracking: Car) {
-        //Set the camera on the tracking car
-        let zoom = this.settings.settings.zoom * 10;
-        this.stage.pivot.set(tracking.position.x - (window.innerWidth / (zoom * 2)), tracking.position.y - (window.innerHeight / (zoom * 2)));
-        this.stage.scale.set(zoom, zoom);
-    }
-
-    updateSensors(car: Car) {
+    renderSensors(car: Car) {
         if (car.alive && this.settings.settings.renderSensors) {
             for (let sensor of car.sensors) {
                 let sensorSprite = new SensorSprite(sensor);
