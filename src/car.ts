@@ -74,6 +74,10 @@ export default class Car {
 
         //Set position
         let speed: number = result[1] * 30;
+
+        //Clamp speed so checkpoints are still processed
+        speed = Math.min(30, Math.max(speed, -30));
+
         this.position.x += Math.cos(this.angle) * speed * this.settings.settings.stepAmount * delta;
         this.position.y += Math.sin(this.angle) * speed * this.settings.settings.stepAmount * delta;
 
