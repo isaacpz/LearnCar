@@ -2,7 +2,7 @@ import * as dat from "dat-gui";
 
 export default class Settings {
     settings = {
-        stepAmount: 0.25,
+        stepAmount: 0.15,
         speed: 1,
         follow: true,
         renderSensors: false,
