@@ -13,6 +13,7 @@ export default class Settings {
         selectionAmount: 10,
         mutationChance: 0.9,
         mutationFactor: 0.15,
+        course: "line-hard",
         method: function(){},
     }
 

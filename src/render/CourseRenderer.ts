@@ -50,6 +50,7 @@ export default class CourseRenderer {
     setCourse(course: Course) {
         if (this.courseSprite !== null) {
             this.stage.removeChild(this.courseSprite);
+            this.stage.removeChild(this.checkpointsSprite);
         }
 
         this.courseSprite = new LinesSprite(course.walls);
@@ -75,7 +76,9 @@ export default class CourseRenderer {
                 }
             } else { //Too many
                 for (let i = 0; i < this.carSprites.length - cars.length; i++) {
-                    this.carSprites.pop().destroy();
+                    let sprite = this.carSprites.pop();
+                    this.stage.removeChild(sprite)
+                    sprite.destroy();
                 }
             }
         }
@@ -98,6 +101,14 @@ export default class CourseRenderer {
         this.updateCameraPosition(this.tracking);
         this.renderNeuralNetwork(this.tracking);
         this.renderSensors(this.tracking);
+    }
+
+    clearCarSprites() {
+        this.carSprites.forEach((car) => {
+            this.stage.removeChild(car);
+            car.destroy();
+        });
+        this.carSprites = [];
     }
 
     getTopCar(cars: Car[]): Car {

@@ -27,7 +27,7 @@ export default class Car {
     health: number = 100; //The amount of ticks left until they die automatically (gets recharged by passing checkpoints)
     timeAlive: number = 0; //How many ticks they've survived
     fitness: number = 1; //Their current fitness score, calculated by how many checkpoints they've passed or how long it took them to complete the course    
-    remainingCheckpoints:line[] = [];
+    remainingCheckpoints: line[] = [];
 
     /*
     Rendering Info
@@ -37,12 +37,16 @@ export default class Car {
 
     constructor(settings: Settings, course: Course) {
         this.settings = settings;
-        this.setCheckpoints(course);        
-
-        this.position = {x: course.startingPosition.x, y: course.startingPosition.y};
-        this.angle = course.startingAngle;
+        this.setCourse(course);
     }
 
+    setCourse(course: Course) {
+        this.setCheckpoints(course);
+
+        this.position = { x: course.startingPosition.x, y: course.startingPosition.y };
+        this.angle = course.startingAngle;
+    }
+    
     /*
     Tick
     */
@@ -104,7 +108,7 @@ export default class Car {
         this.color = 0xd8d8d8;
     }
 
-    respawn(course:Course) {
+    respawn(course: Course) {
         this.health = 100;
         this.timeAlive = 0;
         this.fitness = 0;
@@ -116,7 +120,7 @@ export default class Car {
     setCheckpoints(course: Course) {
         //Clone the checkpoints
         this.remainingCheckpoints = [];
-        for(let current of course.checkpoints)
+        for (let current of course.checkpoints)
             this.remainingCheckpoints.push(current);
         this.remainingCheckpoints.splice(0, 1);
     }
@@ -167,12 +171,12 @@ export default class Car {
         }
         return sensors;
     }
-    
+
     processCheckpoints() {
-        let i:number = 0;
-        while(i < this.remainingCheckpoints.length) { //use this weird loop so we can remove without skipping values
+        let i: number = 0;
+        while (i < this.remainingCheckpoints.length) { //use this weird loop so we can remove without skipping values
             let checkpoint = this.remainingCheckpoints[i];
-            if(PhysicsUtil.doesLineCollideWithCircle(checkpoint, this.position, 15)) {
+            if (PhysicsUtil.doesLineCollideWithCircle(checkpoint, this.position, 15)) {
                 this.remainingCheckpoints.splice(i, 1); //Remove this checkpoint so it doesnt get double counted
                 this.health = 100; //Give them more life
                 this.fitness++; //Give them more fitness
@@ -180,7 +184,7 @@ export default class Car {
                 i++;
             }
         }
-        if(this.remainingCheckpoints.length == 0) { //They finished the course!
+        if (this.remainingCheckpoints.length == 0) { //They finished the course!
             //Fitness is based on time taken now.
             this.fitness += (1000.0 / this.timeAlive);
             this.kill();
