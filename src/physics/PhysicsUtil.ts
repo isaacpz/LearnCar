@@ -49,7 +49,7 @@ export default class PhysicsUtil {
     }
 
     static doesCircleCollideWithBoundingBox(A: point, B: point, C: point, radius: number): boolean {
-        var minAB = { x: Math.min(A.x, B.x), y: Math.min(A.y, B.y) };
+        var minAB = { x: Math.min(B.x, A.x), y: Math.min(A.y, B.y) };
         var maxAB = { x: Math.max(A.x, B.x), y: Math.max(A.y, B.y) };
         var minC = { x: C.x - radius, y: C.y - radius };
         var maxC = { x: C.x + radius, y: C.y + radius };
@@ -69,8 +69,6 @@ export default class PhysicsUtil {
 
         var z = u.x * AC.y - u.y * AC.x;
         z = Math.abs(z);
-
-
         var denom = Math.sqrt(u.x * u.x + u.y * u.y);
         var CI = z / denom;
 
@@ -100,7 +98,7 @@ export default class PhysicsUtil {
         var pscal2 = (-AB.x) * BC.x + (-AB.y) * BC.y;
 
         if (pscal1 >= 0 && pscal2 >= 0)
-            return true;   // I entre A et B, ok.
+            return true;
 
         // is a or b in the circle?
         if (this.isPointInCircle(A, C, radius) ||
